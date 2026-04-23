@@ -1,0 +1,33 @@
+{
+  "name": "@ericgallitto/feedback-api",
+  "version": "0.1.0",
+  "description": "Hono HTTP server with OpenAPI and outbound webhooks for feedback-sdk",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "bin": {
+    "feedback-server": "./dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/server.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@ericgallitto/feedback-contract": "workspace:^",
+    "@hono/node-server": "^1.13.7",
+    "hono": "^4.6.20"
+  },
+  "optionalDependencies": {
+    "@ericgallitto/feedback-storage-sqlite": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3"
+  }
+}

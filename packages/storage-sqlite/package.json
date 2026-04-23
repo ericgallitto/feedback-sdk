@@ -1,0 +1,26 @@
+{
+  "name": "@ericgallitto/feedback-storage-sqlite",
+  "version": "0.1.0",
+  "description": "SQLite storage adapter for @ericgallitto/feedback-api",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@ericgallitto/feedback-contract": "workspace:^",
+    "better-sqlite3": "^11.8.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3"
+  }
+}
