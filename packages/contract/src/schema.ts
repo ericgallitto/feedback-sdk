@@ -27,6 +27,9 @@ type JSONSchemaObject = {
   oneOf?: JSONSchemaObject[]
   anyOf?: JSONSchemaObject[]
   allOf?: JSONSchemaObject[]
+  if?: JSONSchemaObject
+  then?: JSONSchemaObject
+  else?: JSONSchemaObject
   $ref?: string
   description?: string
   format?: string
@@ -119,6 +122,9 @@ export const feedbackInputSchema: JSONSchemaObject = {
     },
     user_name: nullableString,
   },
+  if: { required: ['user_id'], properties: { user_id: { type: 'string', minLength: 1 } } },
+  then: {},
+  else: { required: ['user_email'] },
 }
 
 // ---------------------------------------------------------------------------

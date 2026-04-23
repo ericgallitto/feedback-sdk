@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "description": "Shared types, JSON Schema, and OpenAPI spec for feedback-sdk",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -18,7 +16,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.scripts.json --noEmit",
     "gen-openapi": "tsx scripts/gen-openapi.ts",
     "clean": "rm -rf dist"
   },

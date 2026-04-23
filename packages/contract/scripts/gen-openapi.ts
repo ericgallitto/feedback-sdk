@@ -11,6 +11,13 @@ import { fileURLToPath } from 'node:url'
 
 // Import schema data directly from source (tsx resolves .ts imports)
 import { feedbackInputSchema, feedbackRecordSchema } from '../src/schema.js'
+import type { FeedbackStatus, PipelineState } from '../src/types.js'
+
+const FEEDBACK_STATUS_ENUM: FeedbackStatus[] = ['new', 'reviewed', 'accepted', 'deferred', 'rejected']
+const PIPELINE_STATE_ENUM: PipelineState[] = [
+  'captured', 'triaged', 'plan_approved', 'in_progress',
+  'code_review', 'ship_approved', 'shipped', 'closed',
+]
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -32,7 +39,7 @@ const feedbackPatchSchema = {
   properties: {
     status: {
       type: 'string',
-      enum: ['new', 'reviewed', 'accepted', 'deferred', 'rejected'],
+      enum: FEEDBACK_STATUS_ENUM,
     },
     priority: {
       anyOf: [{ type: 'integer', minimum: 1, maximum: 5 }, { type: 'null' }],
@@ -42,16 +49,7 @@ const feedbackPatchSchema = {
     },
     pipeline_state: {
       type: 'string',
-      enum: [
-        'captured',
-        'triaged',
-        'plan_approved',
-        'in_progress',
-        'code_review',
-        'ship_approved',
-        'shipped',
-        'closed',
-      ],
+      enum: PIPELINE_STATE_ENUM,
     },
   },
 }

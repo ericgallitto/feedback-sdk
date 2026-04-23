@@ -30,6 +30,12 @@ export type PipelineState =
 // Element context captured from the DOM at click time
 // ---------------------------------------------------------------------------
 
+/**
+ * Client-side element context captured at click time (before flattening into wire-format fields).
+ * Used internally by @ericgallitto/feedback-core and @ericgallitto/feedback-react.
+ * The individual fields map to the `element_*`, `section_heading`, and `surrounding_text` fields
+ * on FeedbackInput after flattening.
+ */
 export interface ElementContext {
   /** e.g. "Settings > Billing > Change Plan button" */
   breadcrumb: string
@@ -45,7 +51,11 @@ export interface ElementContext {
 // What the widget submits — no server-assigned fields
 // ---------------------------------------------------------------------------
 
-export interface FeedbackInput {
+type FeedbackIdentity =
+  | { user_id: string; user_email?: string | null; user_name?: string | null }
+  | { user_id?: null;  user_email: string;         user_name?: string | null }
+
+export type FeedbackInput = {
   // Page context
   page_url: string
   page_name?: string | null
@@ -60,13 +70,7 @@ export interface FeedbackInput {
   // Core feedback
   category: FeedbackCategory
   comment: string
-  // Identity (supplied by host app or magic-link verified email)
-  /** present when signed-in identity adapter used */
-  user_id?: string | null
-  /** required if user_id not provided (verified email path) */
-  user_email?: string
-  user_name?: string | null
-}
+} & FeedbackIdentity
 
 // ---------------------------------------------------------------------------
 // Full stored record — server-assigned fields added
