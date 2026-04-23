@@ -1,0 +1,16 @@
+{
+  "page_url": "https://app.example.com/dashboard",
+  "page_name": "Dashboard",
+  "element_selector": "button#export-csv",
+  "element_label": "Export CSV",
+  "element_breadcrumb": "Dashboard > Reports > Export CSV button",
+  "element_type": "button",
+  "section_heading": "Reports",
+  "surrounding_text": "Download your data as a CSV file for offline analysis.",
+  "viewport_context": { "scrollY": 240, "width": 1440, "height": 900 },
+  "category": "ui_suggestion",
+  "comment": "The export button should also support Excel format.",
+  "user_id": "usr_abc123",
+  "user_email": "power-user@example.com",
+  "user_name": "Alex Rivera"
+}

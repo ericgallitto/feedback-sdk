@@ -1,6 +1,11 @@
 import type { NextConfig } from 'next'
 
 const config: NextConfig = {
+  transpilePackages: [
+    '@ericgallitto/feedback-react',
+    '@ericgallitto/feedback-core',
+    '@ericgallitto/feedback-contract',
+  ],
   // Proxy /api/feedback to the standalone feedback-api server
   async rewrites() {
     return [

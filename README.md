@@ -7,6 +7,28 @@
 
 ---
 
+## See it in action
+
+<!-- GIF: Widget — user clicks the 💬 trigger, points at a button, types feedback, submits. -->
+<!-- Replace the line below with: ![Widget demo](docs/media/widget.gif) -->
+> **Widget demo GIF** — `docs/media/widget.gif` (record with Kap/LICEcap: click trigger → pick element → submit)
+
+<!-- GIF: Cursor MCP — AI coding tool lists feedback, drafts a fix plan. -->
+<!-- Replace the line below with: ![Cursor MCP demo](docs/media/cursor-mcp.gif) -->
+> **Cursor MCP GIF** — `docs/media/cursor-mcp.gif` (Cursor: list_feedback → plan draft in chat)
+
+<!-- GIF: Webhook — terminal shows signed POST firing on submit. -->
+<!-- Replace the line below with: ![Webhook demo](docs/media/webhook.gif) -->
+> **Webhook GIF** — `docs/media/webhook.gif` (terminal: webhook POST with X-Feedback-Signature header)
+
+<!-- GIF: HITL — human approves plan, pipeline_state advances. -->
+<!-- Replace the line below with: ![HITL approval demo](docs/media/hitl-approve.gif) -->
+> **HITL approval GIF** — `docs/media/hitl-approve.gif` (PATCH status → pipeline_state moves to plan_approved)
+
+**Recording instructions:** Use [Kap](https://getkap.co/) (macOS) or [LICEcap](https://www.cockos.com/licecap/). Target ≤ 6 MB per GIF. Each recording should be under 30 seconds. Save to `docs/media/` and replace the `>` blockquotes above with `![]()` image tags.
+
+---
+
 ## What is this?
 
 A small control on your website lets people **point at a specific part of the page** and describe what's wrong or missing — not just a generic "contact us" box.
@@ -204,6 +226,8 @@ corepack enable
 pnpm install
 pnpm build          # build all packages
 pnpm typecheck      # typecheck all packages
+pnpm test           # run all unit + integration tests
+pnpm --filter @ericgallitto/feedback-mcp smoke  # MCP server end-to-end smoke test
 ```
 
 Run the Next.js demo:

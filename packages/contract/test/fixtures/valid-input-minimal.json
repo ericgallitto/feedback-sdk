@@ -1,0 +1,6 @@
+{
+  "page_url": "https://app.example.com/settings",
+  "category": "bug",
+  "comment": "The save button does nothing when I click it.",
+  "user_email": "reporter@example.com"
+}

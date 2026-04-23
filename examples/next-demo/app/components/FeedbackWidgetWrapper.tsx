@@ -1,7 +1,13 @@
 'use client'
 
-import { FeedbackWidget } from '@ericgallitto/feedback-react'
+import dynamic from 'next/dynamic'
 import type { FeedbackInput } from '@ericgallitto/feedback-contract'
+import type { FeedbackWidgetProps } from '@ericgallitto/feedback-react'
+
+const FeedbackWidget = dynamic<FeedbackWidgetProps>(
+  () => import('@ericgallitto/feedback-react').then((m) => ({ default: m.FeedbackWidget })),
+  { ssr: false },
+)
 
 export function FeedbackWidgetWrapper() {
   async function handleSubmit(input: FeedbackInput) {
