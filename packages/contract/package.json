@@ -12,6 +12,10 @@
       "import": "./dist/schema.js",
       "types": "./dist/schema.d.ts"
     },
+    "./store": {
+      "import": "./dist/store.js",
+      "types": "./dist/store.d.ts"
+    },
     "./openapi.json": "./openapi.json"
   },
   "scripts": {

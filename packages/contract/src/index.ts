@@ -14,3 +14,6 @@ export type {
 
 // Re-export JSON Schema objects
 export { feedbackInputSchema, feedbackRecordSchema } from './schema.js'
+
+// Store interface
+export type { FeedbackStore, FeedbackUpdateFields } from './store.js'
