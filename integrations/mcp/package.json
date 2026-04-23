@@ -1,0 +1,34 @@
+{
+  "name": "@ericgallitto/feedback-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for feedback-sdk — list, get, update, and summarize feedback from any MCP-compatible coding tool",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "bin": {
+    "feedback-mcp": "./dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/server.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@ericgallitto/feedback-contract": "workspace:^",
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "zod": "^3.24.2"
+  },
+  "optionalDependencies": {
+    "@ericgallitto/feedback-api": "workspace:^",
+    "@ericgallitto/feedback-storage-sqlite": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3"
+  }
+}
