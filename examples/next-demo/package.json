@@ -1,0 +1,27 @@
+{
+  "name": "@ericgallitto/feedback-next-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "End-to-end demo: widget → HTTP API (SQLite) → MCP server + webhook echo",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "api": "FEEDBACK_STORE=sqlite FEEDBACK_SQLITE_PATH=./feedback.db FEEDBACK_DEMO_MODE=true node ../../../integrations/api/dist/server.js",
+    "mcp": "FEEDBACK_STORE=sqlite FEEDBACK_SQLITE_PATH=./feedback.db node ../../../integrations/mcp/dist/server.js"
+  },
+  "dependencies": {
+    "@ericgallitto/feedback-contract": "workspace:^",
+    "@ericgallitto/feedback-react": "workspace:^",
+    "next": "^15.1.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "typescript": "^5.7.3"
+  }
+}

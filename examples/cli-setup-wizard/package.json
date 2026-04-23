@@ -1,0 +1,22 @@
+{
+  "name": "@ericgallitto/feedback-sdk-setup",
+  "version": "0.1.0",
+  "description": "Interactive CLI wizard — sets up feedback-sdk for your coding tool in under 2 minutes",
+  "type": "module",
+  "bin": {
+    "feedback-sdk-setup": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3"
+  }
+}
