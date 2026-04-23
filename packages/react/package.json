@@ -1,0 +1,32 @@
+{
+  "name": "@ericgallitto/feedback-react",
+  "version": "0.1.0",
+  "description": "React widget and hooks for feedback-sdk — pluggable, themeable, framework-agnostic submit",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@ericgallitto/feedback-contract": "workspace:^",
+    "@ericgallitto/feedback-core": "workspace:^"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.7.3"
+  }
+}
