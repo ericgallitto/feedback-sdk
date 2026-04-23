@@ -1,0 +1,23 @@
+{
+  "name": "@ericgallitto/feedback-core",
+  "version": "0.1.0",
+  "description": "Framework-agnostic DOM utilities for feedback context capture and element highlighting",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@ericgallitto/feedback-contract": "workspace:^"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
