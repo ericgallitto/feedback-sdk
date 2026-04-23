@@ -1,0 +1,624 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Feedback SDK API",
+    "version": "0.1.0",
+    "description": "HTTP API for the @ericgallitto/feedback-sdk. Accepts user feedback, exposes it for review, and provides webhook events."
+  },
+  "paths": {
+    "/feedback": {
+      "post": {
+        "operationId": "createFeedback",
+        "summary": "Submit feedback",
+        "description": "Submit a new feedback item from the widget.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Feedback created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error."
+          },
+          "422": {
+            "description": "Unprocessable entity."
+          }
+        }
+      },
+      "get": {
+        "operationId": "listFeedback",
+        "summary": "List feedback",
+        "description": "Retrieve a list of feedback records, optionally filtered.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "new",
+                "reviewed",
+                "accepted",
+                "deferred",
+                "rejected"
+              ]
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bug",
+                "ui_suggestion",
+                "missing_feature",
+                "confusing",
+                "general"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by page URL substring."
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by user ID."
+          },
+          {
+            "name": "pipeline_state",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "captured",
+                "triaged",
+                "plan_approved",
+                "in_progress",
+                "code_review",
+                "ship_approved",
+                "shipped",
+                "closed"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of feedback records.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeedbackRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedback/{id}": {
+      "get": {
+        "operationId": "getFeedback",
+        "summary": "Get a feedback record",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The feedback record.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackRecord"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found."
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patchFeedback",
+        "summary": "Update a feedback record",
+        "description": "Partially update status, priority, admin notes, or pipeline state.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated feedback record.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error."
+          },
+          "404": {
+            "description": "Not found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FeedbackInput": {
+        "type": "object",
+        "required": [
+          "page_url",
+          "category",
+          "comment"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "page_url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The URL of the page where feedback was submitted."
+          },
+          "page_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "element_selector": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "element_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "element_breadcrumb": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "element_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "section_heading": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "surrounding_text": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "viewport_context": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "bug",
+              "ui_suggestion",
+              "missing_feature",
+              "confusing",
+              "general"
+            ]
+          },
+          "comment": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The user-supplied feedback comment."
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "user_email": {
+            "type": "string",
+            "description": "Required when user_id is not provided."
+          },
+          "user_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "FeedbackRecord": {
+        "type": "object",
+        "required": [
+          "id",
+          "page_url",
+          "category",
+          "comment",
+          "page_name",
+          "element_selector",
+          "element_label",
+          "element_breadcrumb",
+          "element_type",
+          "section_heading",
+          "surrounding_text",
+          "viewport_context",
+          "user_id",
+          "user_email",
+          "user_name",
+          "status",
+          "priority",
+          "pipeline_state",
+          "admin_notes",
+          "reviewed_at",
+          "agent_summary",
+          "agent_tags",
+          "created_at",
+          "updated_at"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "page_url": {
+            "type": "string",
+            "minLength": 1
+          },
+          "page_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "element_selector": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "element_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "element_breadcrumb": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "element_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "section_heading": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "surrounding_text": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "viewport_context": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "user_email": {
+            "type": "string"
+          },
+          "user_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "bug",
+              "ui_suggestion",
+              "missing_feature",
+              "confusing",
+              "general"
+            ]
+          },
+          "comment": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "new",
+              "reviewed",
+              "accepted",
+              "deferred",
+              "rejected"
+            ]
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pipeline_state": {
+            "type": "string",
+            "enum": [
+              "captured",
+              "triaged",
+              "plan_approved",
+              "in_progress",
+              "code_review",
+              "ship_approved",
+              "shipped",
+              "closed"
+            ]
+          },
+          "admin_notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "agent_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "agent_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": []
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "FeedbackPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "new",
+              "reviewed",
+              "accepted",
+              "deferred",
+              "rejected"
+            ]
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "admin_notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pipeline_state": {
+            "type": "string",
+            "enum": [
+              "captured",
+              "triaged",
+              "plan_approved",
+              "in_progress",
+              "code_review",
+              "ship_approved",
+              "shipped",
+              "closed"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

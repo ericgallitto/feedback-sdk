@@ -1,0 +1,29 @@
+{
+  "name": "@ericgallitto/feedback-contract",
+  "version": "0.1.0",
+  "description": "Shared types, JSON Schema, and OpenAPI spec for feedback-sdk",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./schema": {
+      "import": "./dist/schema.js",
+      "types": "./dist/schema.d.ts"
+    },
+    "./openapi.json": "./openapi.json"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "gen-openapi": "tsx scripts/gen-openapi.ts",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "tsx": "^4.19.2"
+  }
+}
