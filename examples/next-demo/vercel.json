@@ -1,4 +1,4 @@
 {
-  "buildCommand": "cd ../.. && pnpm turbo run build --filter=@ericgallitto/feedback-next-demo...",
-  "installCommand": "cd ../.. && pnpm install --frozen-lockfile"
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "cd ../.. && pnpm --filter @ericgallitto/feedback-contract build && pnpm --filter @ericgallitto/feedback-core build && pnpm --filter @ericgallitto/feedback-react build && cd examples/next-demo && ./node_modules/.bin/next build"
 }
