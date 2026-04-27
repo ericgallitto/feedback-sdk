@@ -1,0 +1,5 @@
+{
+  "framework": "nextjs",
+  "outputDirectory": "examples/next-demo/.next",
+  "buildCommand": "pnpm --filter @ericgallitto/feedback-contract build && pnpm --filter @ericgallitto/feedback-core build && pnpm --filter @ericgallitto/feedback-react build && pnpm --filter @ericgallitto/feedback-next-demo build"
+}
