@@ -1,6 +1,6 @@
 {
   "name": "@ericgallitto/feedback-storage-sqlite",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "SQLite storage adapter for @ericgallitto/feedback-api",
   "type": "module",
   "exports": {

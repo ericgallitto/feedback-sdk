@@ -182,6 +182,26 @@ export function FeedbackWidget({
     }
   }, [isHighlighting, pathname])
 
+  // Highlight colours have to reach the document root.
+  //
+  // Every other theme variable is set on the widget's own portal, which is
+  // correct: they style the panel and the trigger. The highlight variables are
+  // different. They style elements out on the page, which are not inside the
+  // portal, so a value set there never cascades to them and the outline silently
+  // falls back to its default no matter what the host passes in.
+  //
+  // Anything named --feedback-highlight* is promoted to documentElement and
+  // removed again on unmount.
+  useEffect(() => {
+    const vars = theme?.vars
+    if (!vars) return
+    const promoted = Object.entries(vars).filter(([k]) => k.startsWith('--feedback-highlight'))
+    if (promoted.length === 0) return
+    const root = document.documentElement
+    for (const [k, v] of promoted) root.style.setProperty(k, v)
+    return () => { for (const [k] of promoted) root.style.removeProperty(k) }
+  }, [theme])
+
   const handleClose = useCallback((): void => {
     setIsOpen(false)
     setIsHighlighting(false)

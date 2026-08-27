@@ -1,6 +1,6 @@
 {
   "name": "@ericgallitto/feedback-contract",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Shared types, JSON Schema, and OpenAPI spec for feedback-sdk",
   "type": "module",
   "exports": {
