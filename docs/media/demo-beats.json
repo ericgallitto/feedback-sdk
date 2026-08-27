@@ -1,0 +1,62 @@
+[
+  {
+    "label": "open on the page",
+    "ms": 0
+  },
+  {
+    "label": "cursor reaches the trigger",
+    "ms": 3210
+  },
+  {
+    "label": "composer opens",
+    "ms": 4271
+  },
+  {
+    "label": "picking mode",
+    "ms": 6594
+  },
+  {
+    "label": "hover preview, first card",
+    "ms": 8601
+  },
+  {
+    "label": "outline follows to the next",
+    "ms": 10912
+  },
+  {
+    "label": "and the next",
+    "ms": 13227
+  },
+  {
+    "label": "click locks the selection",
+    "ms": 16335
+  },
+  {
+    "label": "typing while the outline holds",
+    "ms": 19352
+  },
+  {
+    "label": "pick a different one",
+    "ms": 22950
+  },
+  {
+    "label": "new target, comment intact",
+    "ms": 26246
+  },
+  {
+    "label": "choose a category",
+    "ms": 29150
+  },
+  {
+    "label": "who to follow up with",
+    "ms": 31869
+  },
+  {
+    "label": "send",
+    "ms": 33915
+  },
+  {
+    "label": "confirmed",
+    "ms": 36517
+  }
+]

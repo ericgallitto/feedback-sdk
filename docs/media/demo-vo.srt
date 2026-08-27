@@ -1,0 +1,52 @@
+1
+00:00:00,000 --> 00:00:04,200
+Somebody on your team just found a problem with your product.
+
+2
+00:00:04,300 --> 00:00:06,500
+Normally that becomes a vague message in Slack.
+
+3
+00:00:06,600 --> 00:00:08,500
+This is the alternative.
+
+4
+00:00:08,600 --> 00:00:13,100
+They point at the part of the page they mean.
+Whatever they hover is outlined.
+
+5
+00:00:13,200 --> 00:00:16,200
+There is no guesswork about what is being reported.
+
+6
+00:00:16,300 --> 00:00:19,300
+Clicking locks it, and the outline stays.
+
+7
+00:00:19,400 --> 00:00:22,800
+So they can see exactly what they are describing
+while they describe it.
+
+8
+00:00:22,900 --> 00:00:26,100
+Picked the wrong thing? Choose another.
+What they wrote is kept.
+
+9
+00:00:26,200 --> 00:00:29,000
+Their words survive the change of target.
+
+10
+00:00:29,100 --> 00:00:33,800
+A category, and a way to reach them, because a report
+you cannot follow up on is a report you cannot act on.
+
+11
+00:00:33,900 --> 00:00:36,400
+The element, its position in the page, the surrounding
+text, all of it goes with the words.
+
+12
+00:00:36,500 --> 00:00:37,300
+Now it is something you can work from.

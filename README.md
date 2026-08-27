@@ -9,9 +9,12 @@
 
 ## See it in action
 
-<!-- GIF: Widget — user clicks the feedback trigger, points at a button, types feedback, submits. -->
-<!-- Replace the line below with: ![Widget demo](docs/media/widget.gif) -->
-> **Widget demo GIF** — `docs/media/widget.gif` (record with Kap/LICEcap: click trigger, hover to preview, click to lock the outline, submit)
+https://github.com/ericgallitto/feedback-sdk/raw/main/docs/media/demo.mp4
+
+A 37 second recording of the widget in use: pointing at part of a page, locking the
+selection, writing about it, changing target without losing the text, and submitting. The
+submit is a live round trip to the API server. See [docs/demo-script.md](docs/demo-script.md)
+for the voiceover script and for how to regenerate the recording after a UI change.
 
 <!-- GIF: Cursor MCP — AI coding tool lists feedback, drafts a fix plan. -->
 <!-- Replace the line below with: ![Cursor MCP demo](docs/media/cursor-mcp.gif) -->
