@@ -152,6 +152,14 @@ export function FeedbackWidget({
     function handleKey(e: KeyboardEvent): void {
       if (e.key === 'Escape') {
         e.preventDefault()
+        // Stop it here. This listener is capture-phase on window; reopening the
+        // composer causes React to flush and mount it, and the composer attaches
+        // its own bubble-phase Escape listener on window during that flush. The
+        // very same keypress then reaches the bubble phase and closes what this
+        // handler just opened. Without this line, Escape appears to do nothing
+        // because both handlers ran.
+        e.stopPropagation()
+        e.stopImmediatePropagation()
         clearHover()
         setIsHighlighting(false)
         // Return to the composer rather than discarding what was typed.
