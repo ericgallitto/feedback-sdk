@@ -9,9 +9,9 @@
 
 ## See it in action
 
-<!-- GIF: Widget — user clicks the 💬 trigger, points at a button, types feedback, submits. -->
+<!-- GIF: Widget — user clicks the feedback trigger, points at a button, types feedback, submits. -->
 <!-- Replace the line below with: ![Widget demo](docs/media/widget.gif) -->
-> **Widget demo GIF** — `docs/media/widget.gif` (record with Kap/LICEcap: click trigger → pick element → submit)
+> **Widget demo GIF** — `docs/media/widget.gif` (record with Kap/LICEcap: click trigger, hover to preview, click to lock the outline, submit)
 
 <!-- GIF: Cursor MCP — AI coding tool lists feedback, drafts a fix plan. -->
 <!-- Replace the line below with: ![Cursor MCP demo](docs/media/cursor-mcp.gif) -->

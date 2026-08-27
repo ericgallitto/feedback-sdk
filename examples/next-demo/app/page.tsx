@@ -5,8 +5,9 @@ export default function HomePage() {
         feedback-sdk demo
       </h1>
       <p style={{ color: '#57534e', fontSize: '1.1rem', marginBottom: '48px', lineHeight: 1.6 }}>
-        Click the <strong>💬</strong> button in the bottom-right corner to submit feedback.
-        Point at any element on this page to attach context to your report.
+        Click <strong>feedback</strong> in the bottom-right corner. Point at any part of
+        this page and it stays outlined while you describe it, so you can see exactly what
+        your report is attached to.
       </p>
 
       <section

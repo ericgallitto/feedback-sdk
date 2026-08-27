@@ -13,11 +13,16 @@ export {
 } from './context.js'
 
 // Selector utilities
-export { buildSelector, findFeedbackLabel } from './selector.js'
+export { buildSelector, findFeedbackLabel, resolveTarget } from './selector.js'
 
 // Highlight utilities
 export {
   HIGHLIGHT_STYLE,
+  markHover,
+  clearHover,
+  markSelected,
+  clearSelected,
+  getSelected,
   applyHighlight,
   removeHighlight,
   clearAllHighlights,

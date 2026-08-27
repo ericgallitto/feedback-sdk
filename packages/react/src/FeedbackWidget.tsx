@@ -11,8 +11,11 @@ import {
   captureElementContext,
   buildSelector,
   findFeedbackLabel,
-  applyHighlight,
-  removeHighlight,
+  resolveTarget,
+  markHover,
+  clearHover,
+  markSelected,
+  clearSelected,
   clearAllHighlights,
 } from '@ericgallitto/feedback-core'
 import type { FeedbackWidgetProps, FeedbackCategoryOption } from './types.js'
@@ -25,34 +28,43 @@ const DEFAULT_CATEGORIES: FeedbackCategoryOption[] = [
   { value: 'general', label: 'General' },
 ]
 
+/**
+ * The default trigger: the word "feedback" set in a monospace face.
+ *
+ * It used to be a speech-balloon emoji in a circle. Emoji render differently on
+ * every platform, carry a tone most products do not want, and say nothing to a
+ * screen reader beyond their own name. A word is unambiguous, and monospace
+ * reads as an instrument rather than a chat bubble.
+ *
+ * Override it entirely with the triggerSlot prop.
+ */
 function DefaultTrigger({ onClick }: { onClick: () => void }): ReactNode {
   return (
     <button
       onClick={onClick}
-      aria-label="Open feedback widget"
+      aria-label="Give feedback on this page"
       style={{
         position: 'fixed',
         bottom: '24px',
         right: '24px',
-        width: '48px',
-        height: '48px',
-        borderRadius: '50%',
+        padding: '9px 15px',
+        borderRadius: 'var(--feedback-trigger-radius, 8px)',
         background: 'var(--feedback-trigger-bg, #18181b)',
         color: 'var(--feedback-trigger-color, #fff)',
         border: 'none',
         cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         boxShadow: '0 4px 12px rgba(0,0,0,0.18)',
         zIndex: 'var(--feedback-z-trigger, 9998)' as CSSValue,
-        fontSize: '22px',
-        transition: 'transform 150ms ease',
+        fontFamily: 'var(--feedback-mono, ui-monospace, SFMono-Regular, Menlo, monospace)',
+        fontSize: 'var(--feedback-trigger-size, 12px)',
+        letterSpacing: '0.04em',
+        lineHeight: 1,
+        transition: 'opacity 150ms ease',
       }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.06)' }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = '' }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.88' }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = '' }}
     >
-      💬
+      feedback
     </button>
   )
 }
@@ -89,39 +101,84 @@ export function FeedbackWidget({
   const pageName = pageNameResolver ? pageNameResolver(pathname) : pathname
 
   // ── Element picker ──────────────────────────────────────────────────────────
+  //
+  // The overlay is pointer-events: none, so the cursor reaches the page
+  // underneath and `event.target` is the element the person is actually
+  // pointing at. It used to be pointer-events: auto, which meant every mouse
+  // event landed on the overlay itself, and the picker highlighted and selected
+  // the overlay rather than anything on the page.
+  //
+  // Hover is tracked as a single current element rather than by adding on
+  // mouseover and removing on mouseout. Those events bubble, so crossing from a
+  // parent into a child fired both and the outline flickered.
   useEffect(() => {
     if (!isHighlighting) return
 
-    function handleClick(e: MouseEvent): void {
-      e.preventDefault()
-      e.stopPropagation()
-      const target = e.target as HTMLElement
+    // Never let the picker target its own UI.
+    const isOwn = (el: Element | null): boolean => !!el?.closest('[data-feedback-ui]')
+
+    function pick(target: HTMLElement): void {
       setSelectedElement({
         selector: buildSelector(target),
         label: findFeedbackLabel(target),
         context: captureElementContext(target, pathname, null),
       })
+      clearHover()
+      // Hold the outline on the chosen element while the composer is open, so
+      // the person can see what they attached their words to.
+      markSelected(target)
       setIsHighlighting(false)
       setIsOpen(true)
     }
 
-    function handleMouseOver(e: MouseEvent): void {
-      applyHighlight(e.target as HTMLElement)
+    function handleClick(e: MouseEvent): void {
+      const raw = e.target as HTMLElement
+      if (isOwn(raw)) return
+      const target = resolveTarget(raw)
+      // Capture phase: stop the page's own handlers from firing. Clicking a
+      // link to describe it should not navigate away from it.
+      e.preventDefault()
+      e.stopPropagation()
+      pick(target)
     }
 
-    function handleMouseOut(e: MouseEvent): void {
-      removeHighlight(e.target as HTMLElement)
+    function handleMove(e: MouseEvent): void {
+      const raw = e.target as HTMLElement
+      // Highlight what would actually be recorded, not the deepest node the
+      // cursor happens to sit over.
+      markHover(isOwn(raw) ? null : resolveTarget(raw))
+    }
+
+    function handleKey(e: KeyboardEvent): void {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        clearHover()
+        setIsHighlighting(false)
+        // Return to the composer rather than discarding what was typed.
+        setIsOpen(true)
+        return
+      }
+      // Keyboard route to the same outcome, for anyone not using a mouse.
+      if (e.key === 'Enter' || e.key === ' ') {
+        const el = document.activeElement as HTMLElement | null
+        if (el && el !== document.body && !isOwn(el)) {
+          e.preventDefault()
+          pick(resolveTarget(el))
+        }
+      }
     }
 
     document.addEventListener('click', handleClick, true)
-    document.addEventListener('mouseover', handleMouseOver)
-    document.addEventListener('mouseout', handleMouseOut)
+    document.addEventListener('mousemove', handleMove, true)
+    window.addEventListener('keydown', handleKey, true)
 
     return () => {
       document.removeEventListener('click', handleClick, true)
-      document.removeEventListener('mouseover', handleMouseOver)
-      document.removeEventListener('mouseout', handleMouseOut)
-      clearAllHighlights()
+      document.removeEventListener('mousemove', handleMove, true)
+      window.removeEventListener('keydown', handleKey, true)
+      // Only the hover marker. The selection is the point of the exercise and
+      // has to survive leaving picking mode.
+      clearHover()
     }
   }, [isHighlighting, pathname])
 
@@ -129,6 +186,20 @@ export function FeedbackWidget({
     setIsOpen(false)
     setIsHighlighting(false)
     clearAllHighlights()
+  }, [])
+
+  /** Go back to the page and pick something else, keeping what has been typed. */
+  const handleReselect = useCallback((): void => {
+    clearSelected()
+    setSelectedElement({ selector: null, label: null, context: null })
+    setIsOpen(false)
+    setIsHighlighting(true)
+  }, [])
+
+  /** Detach from any element without leaving the composer. */
+  const handleClearTarget = useCallback((): void => {
+    clearSelected()
+    setSelectedElement({ selector: null, label: null, context: null })
   }, [])
 
   const handleSubmit = useCallback(async (): Promise<void> => {
@@ -175,7 +246,10 @@ export function FeedbackWidget({
       const record = await onSubmit(input)
       setSubmitted(true)
       onSuccess?.(record)
+      // The outline stays up through the confirmation, so the last thing seen
+      // is the element the words were attached to.
       autoCloseRef.current = setTimeout(() => {
+        clearSelected()
         setIsOpen(false)
         setSubmitted(false)
         setComment('')
@@ -211,15 +285,17 @@ export function FeedbackWidget({
   if (isHighlighting) {
     return createPortal(
       <div
+        data-feedback-ui=""
         style={{
           position: 'fixed',
           inset: 0,
           zIndex: 'var(--feedback-z-overlay, 9999)' as CSSValue,
-          cursor: 'crosshair',
-          background: 'rgba(0,0,0,0.08)',
+          // Critical: the cursor has to reach the page underneath, or every
+          // mouse event lands here and the picker targets the overlay.
+          pointerEvents: 'none',
+          // A wash would sit over the element being highlighted and mute it.
+          background: 'transparent',
         }}
-        onClick={handleClose}
-        aria-label="Cancel element selection — click to close"
       >
         <div style={{
           position: 'fixed',
@@ -234,7 +310,7 @@ export function FeedbackWidget({
           fontWeight: 500,
           pointerEvents: 'none',
         }}>
-          Click any element to attach feedback — press Esc to cancel
+          Click the part of the page you want to talk about. Esc to go back.
         </div>
       </div>,
       document.body,
@@ -252,6 +328,7 @@ export function FeedbackWidget({
   return createPortal(
     <div
       className={theme?.className}
+      data-feedback-ui=""
       style={{
         position: 'fixed',
         inset: 0,
@@ -292,9 +369,11 @@ export function FeedbackWidget({
         }}
       >
         {submitted ? (
-          <div style={{ textAlign: 'center', padding: '16px 0' }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px' }}>✅</div>
-            <p style={{ fontWeight: 600, fontSize: '15px', margin: 0 }}>Thanks for your feedback!</p>
+          <div style={{ padding: '8px 0' }}>
+            <p style={{ fontWeight: 600, fontSize: '15px', margin: 0 }}>Sent. Thank you.</p>
+            <p style={{ fontSize: '13px', margin: '6px 0 0', color: 'var(--feedback-muted, #71717a)' }}>
+              Recorded with the part of the page you pointed at.
+            </p>
           </div>
         ) : (
           <>
@@ -310,7 +389,8 @@ export function FeedbackWidget({
               </button>
             </div>
 
-            {/* Element target indicator */}
+            {/* What this feedback is attached to. The same element is outlined
+                on the page behind the composer for as long as this shows. */}
             {selectedElement.label || selectedElement.selector ? (
               <div style={{
                 background: 'var(--feedback-tag-bg, #f4f4f5)',
@@ -319,21 +399,40 @@ export function FeedbackWidget({
                 fontSize: '12px',
                 color: 'var(--feedback-tag-color, #52525b)',
                 display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                flexDirection: 'column',
+                gap: '6px',
               }}>
-                <span>📌 {selectedElement.label ?? selectedElement.selector}</span>
-                <button
-                  onClick={() => setSelectedElement({ selector: null, label: null, context: null })}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', padding: '0 0 0 8px' }}
-                  aria-label="Remove element target"
-                >
-                  ×
-                </button>
+                <span style={{
+                  fontFamily: 'var(--feedback-mono, ui-monospace, SFMono-Regular, Menlo, monospace)',
+                  fontSize: '11px',
+                  wordBreak: 'break-word',
+                }}>
+                  {selectedElement.label ?? selectedElement.selector}
+                </span>
+                <span style={{ display: 'flex', gap: '12px' }}>
+                  <button
+                    onClick={handleReselect}
+                    style={{
+                      background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                      fontSize: '11px', textDecoration: 'underline', color: 'inherit', font: 'inherit',
+                    }}
+                  >
+                    Pick a different one
+                  </button>
+                  <button
+                    onClick={handleClearTarget}
+                    style={{
+                      background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                      fontSize: '11px', textDecoration: 'underline', color: 'inherit', font: 'inherit',
+                    }}
+                  >
+                    Detach
+                  </button>
+                </span>
               </div>
             ) : (
               <button
-                onClick={() => { setIsOpen(false); setIsHighlighting(true) }}
+                onClick={handleReselect}
                 style={{
                   background: 'var(--feedback-tag-bg, #f4f4f5)',
                   border: '1px dashed var(--feedback-border, #d4d4d8)',

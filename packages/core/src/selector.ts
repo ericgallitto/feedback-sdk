@@ -60,3 +60,30 @@ export function findFeedbackLabel(el: HTMLElement): string | null {
     ?.querySelector('h1, h2, h3, h4')
   return heading?.textContent?.trim() ?? null
 }
+
+/**
+ * The element feedback should actually attach to.
+ *
+ * A cursor always sits over the deepest node under it, which is usually a span
+ * wrapping a few words rather than the thing a person means. Meanwhile
+ * findFeedbackLabel climbs to the nearest data-feedback-label ancestor. Left
+ * alone those two disagree: the picker outlines an inner fragment while the
+ * report names the whole section.
+ *
+ * Resolving both through here keeps them honest. Where a page author has marked
+ * a region with data-feedback-label, that region is the unit of feedback and is
+ * what gets outlined. Everywhere else the exact element under the cursor is
+ * used, because that is what will be recorded.
+ */
+export function resolveTarget(el: HTMLElement): HTMLElement {
+  const labelled = el.closest<HTMLElement>('[data-feedback-label]')
+  if (labelled) return labelled
+
+  // Unlabelled inline fragments are rarely what someone means to point at. A
+  // bare text wrapper with no box of its own gets promoted to its parent.
+  const inlineWrapper =
+    (el.tagName === 'SPAN' || el.tagName === 'EM' || el.tagName === 'STRONG' || el.tagName === 'B' || el.tagName === 'I') &&
+    el.parentElement != null &&
+    el.parentElement !== document.body
+  return inlineWrapper ? (el.parentElement as HTMLElement) : el
+}
