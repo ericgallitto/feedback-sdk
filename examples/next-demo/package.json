@@ -8,8 +8,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "api": "FEEDBACK_STORE=sqlite FEEDBACK_SQLITE_PATH=./feedback.db FEEDBACK_DEMO_MODE=true node ../../../integrations/api/dist/server.js",
-    "mcp": "FEEDBACK_STORE=sqlite FEEDBACK_SQLITE_PATH=./feedback.db node ../../../integrations/mcp/dist/server.js"
+    "api": "FEEDBACK_STORE=sqlite FEEDBACK_SQLITE_PATH=./feedback.db FEEDBACK_DEMO_MODE=true node ../../integrations/api/dist/server.js",
+    "mcp": "FEEDBACK_STORE=sqlite FEEDBACK_SQLITE_PATH=./feedback.db node ../../integrations/mcp/dist/server.js"
   },
   "dependencies": {
     "@ericgallitto/feedback-contract": "workspace:^",

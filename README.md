@@ -216,7 +216,7 @@ const [sp] = useSearchParams()
 |---------|--------|-------------|
 | In-memory | `createMemoryStore()` from `@ericgallitto/feedback-api` | Tests, demos |
 | SQLite | `createSqliteStore(path)` from `@ericgallitto/feedback-storage-sqlite` | Single-server production |
-| Supabase | See [docs/adapters/supabase.md](docs/adapters/supabase.md) | Multi-tenant, hosted |
+| Supabase / Postgres | Not shipped — implement the `FeedbackStore` interface from `@ericgallitto/feedback-contract` | Multi-tenant, hosted |
 
 ---
 
